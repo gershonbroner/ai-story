@@ -18,8 +18,26 @@ SYSTEM_PROMPT = (
 )
 
 # ---- DB (SQLite) ----
-SQLALCHEMY_DATABASE_URL = "sqlite:///./stories.db"
-engine = create_engine(SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False})
+SQLALCHEMY_DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./stories.db")
+
+# 2) תמיכה גם ב־postgres וגם ב־sqlite
+if SQLALCHEMY_DATABASE_URL.startswith("postgres://"):
+    # תקנון ל־SQLAlchemy 2 + psycopg
+    SQLALCHEMY_DATABASE_URL = SQLALCHEMY_DATABASE_URL.replace(
+        "postgres://", "postgresql+psycopg://", 1
+    )
+
+if SQLALCHEMY_DATABASE_URL.startswith("sqlite"):
+    engine = create_engine(
+        SQLALCHEMY_DATABASE_URL,
+        connect_args={"check_same_thread": False},
+    )
+else:
+    engine = create_engine(
+        SQLALCHEMY_DATABASE_URL,
+        pool_pre_ping=True, 
+    )
+
 SessionLocal = sessionmaker(bind=engine, autoflush=False, autocommit=False)
 Base = declarative_base()
 
