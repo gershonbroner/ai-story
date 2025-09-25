@@ -1,0 +1,14 @@
+# node / vite
+frontend/node_modules
+frontend/dist
+
+# python
+.venv
+__pycache__/
+*.pyc
+stories.db
+
+# env
+.env
+*.env
+backend/.env
