@@ -17,9 +17,9 @@ import {
   Divider,
   Box,
   CircularProgress,
-  Grid,
   CssBaseline,
 } from "@mui/material";
+import Grid from "@mui/material/Grid"; // או: import { Grid } from "@mui/material"
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import SearchIcon from "@mui/icons-material/Search";
 import SendIcon from "@mui/icons-material/Send";
@@ -166,7 +166,7 @@ export default function App() {
         <Card>
           <CardHeader
             title="צור סיפור חדש"
-            subheader="הקלד נושא, שלח, וקבל סיפור"
+            subheader="הקלד נושא, שלח, וקבל סיפור שנשמר בבסיס הנתונים"
           />
           <CardContent>
             <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
@@ -269,7 +269,7 @@ export default function App() {
 
           <Grid container spacing={2}>
             {filtered.map((s) => (
-              <Grid item xs={12} key={s.id}>
+              <Grid size={12} key={s.id}>
                 <Card variant="outlined">
                   <CardHeader
                     title={
