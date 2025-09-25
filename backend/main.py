@@ -17,26 +17,24 @@ SYSTEM_PROMPT = (
     "הדגש התחלה-אמצע-סוף, וללא תוכן בעייתי."
 )
 
-# ---- DB (SQLite) ----
+# קרא מה-ENV; ברירת מחדל: SQLite
 SQLALCHEMY_DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./stories.db")
 
-# 2) תמיכה גם ב־postgres וגם ב־sqlite
+# נרמול: כל "postgres://" או "postgresql://" -> "postgresql+psycopg://"
 if SQLALCHEMY_DATABASE_URL.startswith("postgres://"):
-    # תקנון ל־SQLAlchemy 2 + psycopg
     SQLALCHEMY_DATABASE_URL = SQLALCHEMY_DATABASE_URL.replace(
         "postgres://", "postgresql+psycopg://", 1
     )
+elif SQLALCHEMY_DATABASE_URL.startswith("postgresql://") and "+psycopg" not in SQLALCHEMY_DATABASE_URL:
+    SQLALCHEMY_DATABASE_URL = SQLALCHEMY_DATABASE_URL.replace(
+        "postgresql://", "postgresql+psycopg://", 1
+    )
 
+# יצירת engine
 if SQLALCHEMY_DATABASE_URL.startswith("sqlite"):
-    engine = create_engine(
-        SQLALCHEMY_DATABASE_URL,
-        connect_args={"check_same_thread": False},
-    )
+    engine = create_engine(SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False})
 else:
-    engine = create_engine(
-        SQLALCHEMY_DATABASE_URL,
-        pool_pre_ping=True, 
-    )
+    engine = create_engine(SQLALCHEMY_DATABASE_URL, pool_pre_ping=True)
 
 SessionLocal = sessionmaker(bind=engine, autoflush=False, autocommit=False)
 Base = declarative_base()
